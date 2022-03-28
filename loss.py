@@ -8,16 +8,16 @@ from graphic import Linear
 
 class Loss:
     @abstractmethod
-    def loss_point(self, linear: Linear, point: ndarray) -> ndarray:
+    def loss_point(self, linear: Linear, x: ndarray, y: float) -> ndarray:
         pass
 
-    def loss_points(self, linear: Linear, points: ndarray) -> ndarray:
-        loss = np.array([0, 0])
-        for point in points:
-            loss = loss + self.loss_point(linear, point)
+    def loss_points(self, linear: Linear, points_x: ndarray, points_y: ndarray) -> ndarray:
+        loss = np.array([0] * linear.n)
+        for i in range(points_x.shape[0]):
+            loss = loss + self.loss_point(linear, points_x[i], points_y[i])
         return loss
 
 
 class AbsoluteLoss(Loss):
-    def loss_point(self, linear: Linear, point: ndarray) -> ndarray:
-        return sign(linear.w * point[0] + linear.b - point[1]) * np.array([point[0], 1])
+    def loss_point(self, linear: Linear, x: ndarray, y: float) -> ndarray:
+        return sign(linear(x) - y) * np.concatenate((x, np.array([1])))
