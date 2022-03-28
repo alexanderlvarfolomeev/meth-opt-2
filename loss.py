@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 import numpy as np
-from numpy import ndarray, sign
+from numpy import ndarray
 
 from graphic import Linear
 
@@ -33,4 +33,4 @@ class AbsoluteLoss(Loss):
         return (linear(x) - y) ** 2
 
     def loss_gradient_point(self, linear: Linear, x: ndarray, y: float) -> ndarray:
-        return 2 * (linear(x) - y) * np.concatenate((x, np.array([1])))
+        return 2 * (linear(x) - y) * x

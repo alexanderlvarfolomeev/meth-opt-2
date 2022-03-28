@@ -12,7 +12,7 @@ class Linear:
         self.n = a.shape[0] - 1
 
     def __call__(self, x: ndarray) -> float:
-        return np.sum(np.dot(self.a, np.concatenate((x, np.array([1])))))
+        return np.sum(np.dot(self.a, x))
 
 
 class Graphic:
@@ -24,7 +24,7 @@ class Graphic:
         temp = np.random.rand(count, linear.n) * dist + start
         self.points_x = temp
         self.points_y = np.array(
-            [linear(x) + noise_level * random.uniform(-1, 1)
+            [linear(np.concatenate((x, np.array([1])))) + noise_level * random.uniform(-1, 1)
              for x in temp])
 
     def draw(self):

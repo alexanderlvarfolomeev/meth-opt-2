@@ -58,8 +58,7 @@ class Nesterov(Gradient):
 
 
 class AdaGrad(Gradient):
-    def __init__(self, n: int, b: float):
-        self.b = b
+    def __init__(self, n: int):
         self.gradient_accumulator = np.zeros(n)
 
     def compute_weights_diff(self, points_x: ndarray, points_y: ndarray, w: ndarray, loss: Loss) -> ndarray:
@@ -94,7 +93,7 @@ class Adam(Gradient):
 
     def compute_weights_diff(self, points_x: ndarray, points_y: ndarray, w: ndarray, loss: Loss) -> ndarray:
         grad = loss.loss_gradient_points(Linear(w), points_x, points_y)
-        self.previous_gradient = self.b * self.previous_gradient + (1 - self.b) * self.previous_gradient
+        self.previous_gradient = self.b * self.previous_gradient + (1 - self.b) * grad
         self.gradient_accumulator = self.g * self.gradient_accumulator + (1 - self.g) * grad ** 2
         return self.previous_gradient / np.sqrt(self.gradient_accumulator + 1e-8)
 
@@ -121,7 +120,7 @@ def gradient(graphic: Graphic,
         for batch_index in range(batch_number):
             indexes = [i for i in
                        range(batch_index * batch_size, min(graphic.points_x.shape[0], (batch_index + 1) * batch_size))]
-            points_x = np.array([graphic.points_x[pos] for pos in indexes])
+            points_x = np.array([np.concatenate((graphic.points_x[pos], np.array([1]))) for pos in indexes])
             points_y = np.array([graphic.points_y[pos] for pos in indexes])
             w = w - learning_rate * grad.compute_weights_diff(points_x, points_y, w, loss)
             if criteria.stop(w, loss, points_x, points_y, eps):
