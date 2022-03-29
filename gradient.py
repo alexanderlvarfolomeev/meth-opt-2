@@ -149,5 +149,5 @@ def gradient(graphic: Graphic,
             else:
                 w = w - learning_rate * grad.compute_weights_diff(points_x, points_y, w, loss)  # origin version
             if criteria.stop(w, loss, graphic.points_x, graphic.points_y, eps):
-                return epoch, w
-    return epoches, w
+                return epoch * batch_number + batch_index, w
+    return epoches * batch_number, w
