@@ -33,4 +33,6 @@ class AbsoluteLoss(Loss):
         return (linear(x) - y) ** 2
 
     def loss_gradient_point(self, linear: Linear, x: ndarray, y: float) -> ndarray:
-        return 2 * (linear(x) - y) * x
+        grad = 2 * (linear(x) - y) * x
+        grad = grad / (np.array([i ** 2 for i in grad]).sum() ** 0.5)
+        return grad

@@ -8,9 +8,10 @@ from loss import AbsoluteLoss
 
 
 def main():
-    print(gradient(F(), 0.01, np.array([0, 0]), AbsoluteLoss(), 1000, 1, StopLossCriteria(), 1e-4))
+    f = F()
+    print(gradient(f, 0.01, np.array([0, 0]), AbsoluteLoss(), 2000, 1, StopLossCriteria(), f.noise_sum))
 
-    # return
+    return
     f = Graphic(Linear(np.array([1, 2, 4])), -1, 1, 0.01, 50, 1)
     print(gradient(f, 0.01, (np.array([0] * (f.linear.n + 1))), AbsoluteLoss(), 51000, 1, StopLossCriteria(), 1e-4))
 
