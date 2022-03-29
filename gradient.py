@@ -115,7 +115,7 @@ class Adam(Gradient):
         return self.gradient_accumulator.size * 5
 
     def __str__(self):
-        return f"Adam({self.g}, {self.g})"
+        return f"Adam({self.b}, {self.g})"
 
 
 def gradient(graphic: Graphic,
