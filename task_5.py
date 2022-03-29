@@ -122,7 +122,7 @@ class Solver:
         return self.loss.loss_points(Linear(np.array([x, y])), self.points_x, self.points_y)
 
 
-def draw_steps(points: ndarray, loss: Loss, points_x: ndarray, points_y: ndarray, subtitle, axs):
+def draw_steps(points: ndarray, loss: Loss, points_x: ndarray, points_y: ndarray, subtitle):
     x = points[:, 0]
     y = points[:, 1]
     const = 1
@@ -172,18 +172,3 @@ def draw_analisys():
 
 if __name__ == '__main__':
     draw_analisys()
-    # graphic = G_1()
-    # w = np.array([0] * (graphic.linear.n + 1))
-    # max_iters = 8000
-    # batch_size = 20
-    # loss: Loss = AbsoluteLoss()
-    # eps_value = 0.01
-    # arrr = []
-    #
-    # gradient(graphic, 0.1, w, AbsoluteLoss(), max_iters,
-    #          batch_size, CountStopLossCriteria(5), eps=eps_value
-    #          , base_step=5, use_base_step=False, array_of_steps_points=arrr)
-    # nparr = np.array(arrr)
-    # points_x = graphic.points_x
-    # points_y = graphic.points_y
-    # draw_steps(nparr, loss, graphic.points_x, graphic.points_y)

@@ -11,6 +11,9 @@ class Norm_2d_Graphic(Graphic):
     def __init__(self):
         super().__init__(Linear(np.array([1, 4])), -1, 1, 0.01, 30, seed=1)
 
+    def __str__(self):
+        return 'Norm_2d_Graphic'
+
     def get_all_stretches(self):
         return [self.stretch_0, self.stretch_1, self.stretch_2, self.stretch_3]
 
@@ -39,6 +42,9 @@ class Norm_3d_Graphic(Graphic):
     def __init__(self):
         super().__init__(Linear(np.array([1, 4, 13])), -1, 1, 0.01, 30, seed=1)
 
+    def __str__(self):
+        return 'Norm_3d_Graphic'
+
     def get_all_stretches(self):
         return [self.stretch_0, self.stretch_1, self.stretch_2]
 
@@ -61,6 +67,9 @@ class Norm_3d_Graphic(Graphic):
 class Norm_4d_Graphic(Graphic):
     def __init__(self):
         super().__init__(Linear(np.array([1, 4, 89, 34])), -1, 1, 0.01, 30, seed=1)
+
+    def __str__(self):
+        return 'Norm_4d_Graphic'
 
     def get_all_stretches(self):
         return [
@@ -89,6 +98,9 @@ class Norm_10d_Graphic(Graphic):
     def __init__(self):
         super().__init__(Linear(np.array([1, 4, 13, 334, 32, 11, 0, 7, 63, 10])), -1, 1, 0.01, 30, seed=1)
 
+    def __str__(self):
+        return 'Norm_10d_Graphic'
+
     def get_all_stretches(self):
         return [self.stretch_0, self.stretch_1, self.stretch_2]
 
@@ -108,12 +120,12 @@ class Norm_10d_Graphic(Graphic):
         return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=30, seed=1)
 
 
-def hello(print_log: bool = False):
+def analise(print_log: bool = False):
     np.set_printoptions(suppress=True)
     for graphic in [
-        # Norm_2d_Graphic(),
-        # Norm_3d_Graphic(),
-        # Norm_4d_Graphic(),
+        Norm_2d_Graphic(),
+        Norm_3d_Graphic(),
+        Norm_4d_Graphic(),
         Norm_10d_Graphic(),
     ]:
         for i, stretch in enumerate(graphic.get_all_stretches()):
@@ -153,4 +165,4 @@ def hello(print_log: bool = False):
 
 
 if __name__ == '__main__':
-    hello(print_log=True)
+    analise(print_log=True)
