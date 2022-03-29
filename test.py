@@ -2,12 +2,12 @@ import numpy as np
 
 from criteria import StopLossCriteria
 from gradient import gradient
-from graphic import F10d
+from graphic import F10d, F, G, F3d
 from loss import AbsoluteLoss
 
 
 def test():
-    for graphic in [F10d()]:
+    for graphic in [F(), G(), F3d(), F10d()]:
         print(graphic)
         count_points = graphic.points_x.shape[0]
         batch_sizes = [i for i in range(1, count_points + 1, 5)]

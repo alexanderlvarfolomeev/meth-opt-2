@@ -26,23 +26,24 @@ class Graphic:
         self.points_y = np.array(
             [linear(x) + noise_level * random.uniform(-1, 1)
              for x in self.points_x])
+        self.noise_sum = 1e-2
 
     def draw(self):
         assert self.linear.n == 1
         x = self.points_x[:, 0]
         y = self.points_y
-        plt.plot(x, y, 'o')
+        plt.plot(x, y, '.')
         plt.show()
 
 
 class F(Graphic):
     def __init__(self):
-        super().__init__(Linear(np.array([1, 2])), -1, 1, 0.01, 50, 121391674)
+        super().__init__(Linear(np.array([1, 2])), -5, 5, 0.13, 50, 121391674)
 
 
 class G(Graphic):
     def __init__(self):
-        super().__init__(Linear(np.array([3.5, 6])), -10, 10, 1.5, 50, 386484234)
+        super().__init__(Linear(np.array([2, 4])), -1, 1, 0.01, 50, 1)
 
 
 class F3d(Graphic):
