@@ -22,10 +22,10 @@ class Graphic:
         dist = finish - start
         np.random.seed(seed)
         temp = np.random.rand(count, linear.n) * dist + start
-        self.points_x = temp
+        self.points_x = np.array([np.concatenate((x, np.array([1]))) for x in temp])
         self.points_y = np.array(
-            [linear(np.concatenate((x, np.array([1])))) + noise_level * random.uniform(-1, 1)
-             for x in temp])
+            [linear(x) + noise_level * random.uniform(-1, 1)
+             for x in self.points_x])
 
     def draw(self):
         assert self.linear.n == 1
