@@ -27,6 +27,9 @@ class NaiveGradient(Gradient):
     def get_memory_cost(self, batch_size: int) -> int:
         return 0
 
+    def __str__(self):
+        return "NaiveGradient()"
+
 
 class Momentum(Gradient):
     def __init__(self, n: int, b: float):
@@ -41,6 +44,9 @@ class Momentum(Gradient):
     def get_memory_cost(self, batch_size: int) -> int:
         return self.previous_gradient.size * 2
 
+    def __str__(self):
+        return f"Momentum({self.b})"
+
 
 class Nesterov(Gradient):
     def __init__(self, n: int, b: float):
@@ -49,12 +55,14 @@ class Nesterov(Gradient):
 
     def compute_weights_diff(self, points_x: ndarray, points_y: ndarray, w: ndarray, loss: Loss) -> ndarray:
         shift = self.b * self.previous_gradient
-        shifted_points_x = points_x - shift
-        self.previous_gradient = loss.loss_gradient_points(Linear(w), shifted_points_x, points_y)
+        self.previous_gradient = loss.loss_gradient_points(Linear(w - 0.1 * shift), points_x, points_y)
         return shift + (1 - self.b) * self.previous_gradient
 
     def get_memory_cost(self, batch_size: int) -> int:
-        return self.previous_gradient.size * (batch_size + 2)
+        return self.previous_gradient.size * 3
+
+    def __str__(self):
+        return f"Nesterov({self.b})"
 
 
 class AdaGrad(Gradient):
@@ -69,6 +77,9 @@ class AdaGrad(Gradient):
     def get_memory_cost(self, batch_size: int) -> int:
         return self.gradient_accumulator.size * 2
 
+    def __str__(self):
+        return "AdaGrad()"
+
 
 class RMSProp(Gradient):
     def __init__(self, n: int, g: float):
@@ -82,6 +93,9 @@ class RMSProp(Gradient):
 
     def get_memory_cost(self, batch_size: int) -> int:
         return self.gradient_accumulator.size * 3
+
+    def __str__(self):
+        return f"RMSProp({self.g})"
 
 
 class Adam(Gradient):
@@ -99,6 +113,9 @@ class Adam(Gradient):
 
     def get_memory_cost(self, batch_size: int) -> int:
         return self.gradient_accumulator.size * 5
+
+    def __str__(self):
+        return f"Adam({self.g}, {self.g})"
 
 
 def gradient(graphic: Graphic,
