@@ -127,11 +127,14 @@ def gradient(graphic: Graphic,
              criteria: StopCriteria,
              eps: float,
              grad: Gradient = NaiveGradient(),
+             array_of_steps_points=None,
              base_step: float = 100,
              use_base_step: bool = True
              ) -> Tuple[int, Any]:
     batch_number = (graphic.points_x.shape[0] + batch_size - 1) // batch_size
     for epoch in range(epoches):
+        if not array_of_steps_points is None:
+            array_of_steps_points.append(w)
         temp = [[graphic.points_x[i], graphic.points_y[i]] for i in range(graphic.points_x.shape[0])]
         random.shuffle(temp)
         graphic.points_x = np.array([p[0] for p in temp])

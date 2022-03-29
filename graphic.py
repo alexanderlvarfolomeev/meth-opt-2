@@ -17,7 +17,6 @@ class Linear:
 
 def normalized_points(points: ndarray):
     if (points.ndim == 2):
-        ttt = points.shape[1]
         for row in range(points.shape[1] - 1):
             min_row = np.min(points[:, row])
             max_row = np.max(points[:, row])
@@ -85,7 +84,7 @@ class Graphic:
         self.is_normalized = False
 
     def denormalize_solution(self, solution: ndarray) -> ndarray:
-        assert(not self.is_normalized, "graphic should be denormalized first with denormalize_points method")
+        assert((not self.is_normalized), "graphic should be denormalized first with denormalize_points method")
         denormalized_solution = solution.copy()
         for i in range(self.points_x.shape[1] - 1):
             min_row = np.min(self.points_x[:, i])
@@ -103,6 +102,16 @@ class F(Graphic):
 class G(Graphic):
     def __init__(self):
         super().__init__(Linear(np.array([2, 4])), -1, 1, 0.01, 50, 1)
+
+    def __str__(self):
+        return 'G'
+
+class G_1(Graphic):
+    def __init__(self):
+        super().__init__(Linear(np.array([8, -1])), -1, 1, 0.01, 50, 1)
+
+    def __str__(self):
+        return 'G_1'
 
 
 class F3d(Graphic):

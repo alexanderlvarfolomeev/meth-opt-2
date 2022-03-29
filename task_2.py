@@ -64,8 +64,9 @@ class Norm_4d_Graphic(Graphic):
 
     def get_all_stretches(self):
         return [
-            # self.stretch_0,
+            self.stretch_0,
             self.stretch_1,
+            self.stretch_2,
         ]
 
     def stretch_0(self):
@@ -78,6 +79,11 @@ class Norm_4d_Graphic(Graphic):
         finish = np.array([1, 2, 3])
         return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=30, seed=1)
 
+    def stretch_2(self):
+        start = np.array([0, 10, -1])
+        finish = np.array([10, 20, 0])
+        return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=10, seed=1)
+
 
 class Norm_10d_Graphic(Graphic):
     def __init__(self):
@@ -87,18 +93,18 @@ class Norm_10d_Graphic(Graphic):
         return [self.stretch_0, self.stretch_1, self.stretch_2]
 
     def stretch_0(self):
-        start = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-        finish = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+        start = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0])
+        finish = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
         return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=30, seed=1)
 
     def stretch_1(self):
-        start = np.array([-1, -1, -1, -1, -1, -1, -1, -1, -1, -1])
-        finish = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+        start = np.array([-1, -1, -1, -1, -1, -1, -1, -1, -1])
+        finish = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
         return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=30, seed=1)
 
     def stretch_2(self):
-        start = np.array([10, 2, -40, 3, -80, 1, 0, -90, 100, 23])
-        finish = np.array([20, 5, -20, 43, 80, 11, 18, -70, 104, 25])
+        start = np.array([10, 2, -40, 3, -80, 1, 0, -90, 100])
+        finish = np.array([20, 5, -20, 43, 80, 11, 18, -70, 104])
         return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=30, seed=1)
 
 
@@ -107,8 +113,8 @@ def hello(print_log: bool = False):
     for graphic in [
         # Norm_2d_Graphic(),
         # Norm_3d_Graphic(),
-        Norm_4d_Graphic(),
-        # Norm_10d_Graphic(),
+        # Norm_4d_Graphic(),
+        Norm_10d_Graphic(),
     ]:
         for i, stretch in enumerate(graphic.get_all_stretches()):
             y_steps_no_normalization = np.empty(0)
@@ -117,7 +123,7 @@ def hello(print_log: bool = False):
             batch_sizes = [i for i in range(1, count_points + 1, 2)]
             eps_value = 0.1
             cur_stretch = stretch()
-            max_iters = 5000
+            max_iters = 8000
             for batch_size in batch_sizes:
                 w = np.array([0] * (graphic.linear.n + 1))
                 non_norm_step, non_norm_res = gradient(graphic, 0.1, w, AbsoluteLoss(), max_iters,
