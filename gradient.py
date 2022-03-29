@@ -126,7 +126,8 @@ def gradient(graphic: Graphic,
              batch_size: int,
              criteria: StopCriteria,
              eps: float,
-             grad: Gradient = NaiveGradient()
+             grad: Gradient = NaiveGradient(),
+             base_step: float = 100
              ) -> Tuple[int, Any]:
     batch_number = (graphic.points_x.shape[0] + batch_size - 1) // batch_size
     for epoch in range(epoches):
@@ -139,7 +140,7 @@ def gradient(graphic: Graphic,
                        range(batch_index * batch_size, min(graphic.points_x.shape[0], (batch_index + 1) * batch_size))]
             points_x = np.array([graphic.points_x[pos] for pos in indexes])
             points_y = np.array([graphic.points_y[pos] for pos in indexes])
-            w = w - learning_rate * grad.compute_weights_diff(points_x, points_y, w, loss)
+            w = w - learning_rate * base_step * grad.compute_weights_diff(points_x, points_y, w, loss) / (epoch + 1)
             if criteria.stop(w, loss, graphic.points_x, graphic.points_y, eps):
                 return epoch, w
     return epoches, w
