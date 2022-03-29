@@ -15,6 +15,25 @@ class Linear:
         return np.sum(np.dot(self.a, x))
 
 
+def normalized_points(points: ndarray):
+    if (points.ndim == 2):
+        ttt = points.shape[1]
+        for row in range(points.shape[1] - 1):
+            min_row = np.min(points[:, row])
+            max_row = np.max(points[:, row])
+            min_max_diff = max_row - min_row
+            if min_max_diff == 0:
+                min_max_diff = 1
+            points[:, row] = (points[:, row] - min_row) / min_max_diff
+        return points
+    else:
+        max_row = np.max(points[:])
+        min_row = np.min(points[:])
+        min_max_diff = max_row - min_row
+        points[:] = (points[:] - min_row) / min_max_diff
+        return points
+
+
 class Graphic:
 
     def __init__(self, linear: Linear, start: float, finish: float, noise_level: float, count: int, seed: int):
@@ -27,6 +46,27 @@ class Graphic:
             [linear(x) + noise_level * random.uniform(-1, 1)
              for x in self.points_x])
         self.noise_sum = 1e-2
+        self.original_points_x = self.points_x.copy()
+        self.original_points_y = self.points_y.copy()
+        self.is_normalized = False
+
+    def stretch_points(self, start: ndarray, finish: ndarray, noise_level: float, count: int, seed: int):
+        dist = finish - start
+        np.random.seed(seed)
+        a1 = np.random.rand(count, self.linear.n)
+        temp = a1.copy() * dist + start
+        self.points_x = np.array([np.concatenate((x, np.array([1]))) for x in temp])
+        self.points_y = np.array(
+            [self.linear(x) + noise_level * random.uniform(-1, 1)
+             for x in self.points_x])
+        self.noise_sum = 1e-2
+        self.original_points_x = self.points_x.copy()
+        self.original_points_y = self.points_y.copy()
+        self.is_normalized = False
+        str = ''
+        for i in range(start.size):
+            str += (f"({start[i]}, {finish[i]}), ")
+        return str
 
     def draw(self):
         assert self.linear.n == 1
@@ -35,6 +75,25 @@ class Graphic:
         plt.plot(x, y, '.')
         plt.show()
 
+    def normalize_points(self):
+        self.is_normalized = True
+        self.points_x = normalized_points(self.points_x)
+
+    def denormalize_points(self):
+        self.points_x = self.original_points_x.copy()
+        self.points_y = self.original_points_y.copy()
+        self.is_normalized = False
+
+    def denormalize_solution(self, solution: ndarray) -> ndarray:
+        assert(not self.is_normalized, "graphic should be denormalized first with denormalize_points method")
+        denormalized_solution = solution.copy()
+        for i in range(self.points_x.shape[1] - 1):
+            min_row = np.min(self.points_x[:, i])
+            max_row = np.max(self.points_x[:, i])
+            min_max_diff = max_row - min_row
+            denormalized_solution[i] = solution[i] / min_max_diff
+            denormalized_solution[-1] -= min_row * denormalized_solution[i]
+        return denormalized_solution
 
 class F(Graphic):
     def __init__(self):
