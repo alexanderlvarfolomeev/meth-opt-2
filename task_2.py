@@ -15,7 +15,12 @@ class Norm_2d_Graphic(Graphic):
         return 'Norm_2d_Graphic'
 
     def get_all_stretches(self):
-        return [self.stretch_0, self.stretch_1, self.stretch_2, self.stretch_3]
+        return [
+            self.stretch_0,
+            self.stretch_1,
+            self.stretch_2,
+            self.stretch_3
+        ]
 
     def stretch_0(self):
         start = np.array([0])
@@ -40,28 +45,27 @@ class Norm_2d_Graphic(Graphic):
 
 class Norm_3d_Graphic(Graphic):
     def __init__(self):
-        super().__init__(Linear(np.array([1, 4, 13])), -1, 1, 0.01, 30, seed=1)
+        self.points_num = 40
+        super().__init__(Linear(np.array([1, 4, 13])), -1, 1, 0.01, self.points_num, seed=1)
 
     def __str__(self):
         return 'Norm_3d_Graphic'
 
     def get_all_stretches(self):
-        return [self.stretch_0, self.stretch_1, self.stretch_2]
+        return [
+            self.stretch_0,
+            self.stretch_1,
+        ]
 
     def stretch_0(self):
         start = np.array([-1, -1])
         finish = np.array([1, 1])
-        return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=30, seed=1)
+        return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=self.points_num, seed=1)
 
     def stretch_1(self):
-        start = np.array([-10, 30])
-        finish = np.array([10, 50])
-        return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=30, seed=1)
-
-    def stretch_2(self):
-        start = np.array([-5, 100])
-        finish = np.array([5, 130])
-        return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=30, seed=1)
+        start = np.array([-100, -5])
+        finish = np.array([100, 5])
+        return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=self.points_num, seed=1)
 
 
 class Norm_4d_Graphic(Graphic):
@@ -89,8 +93,8 @@ class Norm_4d_Graphic(Graphic):
         return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=30, seed=1)
 
     def stretch_2(self):
-        start = np.array([0, 10, -1])
-        finish = np.array([10, 20, 0])
+        start = np.array([-100, 1, -1])
+        finish = np.array([100, 2, 1])
         return self.stretch_points(start=start, finish=finish, noise_level=0.01, count=10, seed=1)
 
 
@@ -132,21 +136,23 @@ def analise(print_log: bool = False):
             y_steps_no_normalization = np.empty(0)
             y_steps_normalization = np.empty(0)
             count_points = graphic.points_x.shape[0]
-            batch_sizes = [i for i in range(1, count_points + 1, 2)]
+            batch_sizes = [i for i in range(1, count_points + 1, 5)]
             eps_value = 0.1
             cur_stretch = stretch()
-            max_iters = 8000
+            max_iters = 10000
             for batch_size in batch_sizes:
                 w = np.array([0] * (graphic.linear.n + 1))
-                non_norm_step, non_norm_res = gradient(graphic, 0.1, w, AbsoluteLoss(), max_iters,
+                non_norm_step, non_norm_res = gradient(graphic, 0.5, w, AbsoluteLoss(), max_iters,
                                                        batch_size, CountStopLossCriteria(5), eps=eps_value,
                                                        use_base_step=False)
                 y_steps_no_normalization = np.append(y_steps_no_normalization, non_norm_step)
+                # print(graphic.points_x)
                 graphic.normalize_points()
-                normalized_steps, w_res = gradient(graphic, 0.1, w, AbsoluteLoss(), max_iters,
+                normalized_steps, w_res = gradient(graphic, 0.5, w, AbsoluteLoss(), max_iters,
                                                    batch_size, CountStopLossCriteria(5), eps=eps_value
                                                    , base_step=5, use_base_step=False)
                 graphic.denormalize_points()
+                # print(graphic.points_x)
                 y_steps_normalization = np.append(y_steps_normalization, normalized_steps)
                 w_denormalized = graphic.denormalize_solution(w_res)
                 if print_log:
