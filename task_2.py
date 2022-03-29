@@ -121,12 +121,13 @@ def hello(print_log: bool = False):
             for batch_size in batch_sizes:
                 w = np.array([0] * (graphic.linear.n + 1))
                 non_norm_step, non_norm_res = gradient(graphic, 0.1, w, AbsoluteLoss(), max_iters,
-                                                       batch_size, CountStopLossCriteria(5), eps=eps_value)
+                                                       batch_size, CountStopLossCriteria(5), eps=eps_value,
+                                                       use_base_step=False)
                 y_steps_no_normalization = np.append(y_steps_no_normalization, non_norm_step)
                 graphic.normalize_points()
                 normalized_steps, w_res = gradient(graphic, 0.1, w, AbsoluteLoss(), max_iters,
                                                    batch_size, CountStopLossCriteria(5), eps=eps_value
-                                                   , base_step=5)
+                                                   , base_step=5, use_base_step=False)
                 graphic.denormalize_points()
                 y_steps_normalization = np.append(y_steps_normalization, normalized_steps)
                 w_denormalized = graphic.denormalize_solution(w_res)
